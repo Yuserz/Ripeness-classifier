@@ -52,6 +52,7 @@ function RootLayoutNav() {
     <ThemeContext.Provider value={DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)/scan-tab" options={{ headerShown: false }} />
       </Stack>
     </ThemeContext.Provider>
   );

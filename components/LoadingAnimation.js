@@ -2,15 +2,13 @@ import React from "react";
 import { View, Modal, ActivityIndicator, StyleSheet } from "react-native";
 import { colors } from "../constants/Colors";
 
-const LoadingAnimation = ({ isVisible }) => {
-  return (
-    <Modal transparent={true} visible={isVisible}>
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.blue.slitedark} />
-      </View>
-    </Modal>
-  );
-};
+const LoadingAnimation = ({ isVisible }) => (
+  <Modal transparent={true} visible={isVisible}>
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color={colors.blue.slitedark} />
+    </View>
+  </Modal>
+);
 
 const styles = StyleSheet.create({
   loadingContainer: {
