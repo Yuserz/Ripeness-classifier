@@ -53,6 +53,10 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)/scan-tab" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(tabs)/experiment"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </ThemeContext.Provider>
   );

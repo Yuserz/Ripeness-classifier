@@ -17,7 +17,7 @@ export default function index() {
         </Text>
       </View>
       <View style={styles.btnContainer}>
-        <Link href={"/scan-tab"} asChild>
+        <Link href={"/experiment"} asChild>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.btnText}>START</Text>
           </TouchableOpacity>
