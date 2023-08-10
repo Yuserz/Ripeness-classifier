@@ -1,9 +1,9 @@
 export const colors = {
-  blue: {
-    primary: "#0553AF",
-    dark: "#27374D",
-    slitedark: "#526D82",
-    lightblue: "#DDE6ED",
+  primary: {
+    0: "#481620",
+  },
+  Secondary: {
+    0: "#D55672",
   },
   white: {
     0: "#FFFFFF",
