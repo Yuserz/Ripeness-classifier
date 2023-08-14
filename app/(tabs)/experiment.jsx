@@ -29,27 +29,30 @@ const BananaDetector = () => {
   };
 
   const loadImageTensor = async (imageUri) => {
-    const response = imageUri;
-    const imageData = await response.arrayBuffer();
-    const imageArray = new Uint8Array(imageData);
+    try {
+      const response = await fetch(imageUri);
+      const arrayBuffer = await response.arrayBuffer();
+      const imageArray = new Uint8Array(arrayBuffer);
 
-    console.log("response:", response);
+      console.log("imageUri:", imageUri);
+      console.log("Image array length:", imageArray.length);
 
-    console.log("Image array length:", imageArray.length); // Debugging
+      // if (imageArray.length !== IMAGE_SIZE * IMAGE_SIZE * 3) {
+      //   console.error("Incorrect image data length");
+      //   return null;
+      // }
 
-    // Ensure that the imageArray has the correct length
-    if (imageArray.length !== IMAGE_SIZE * IMAGE_SIZE * 3) {
-      console.error("Incorrect image data length");
-      return null; // Return null if the length is incorrect
+      const imageTensor = tf.tensor(
+        imageArray,
+        [IMAGE_SIZE, IMAGE_SIZE, 3],
+        "int32"
+      );
+
+      return imageTensor;
+    } catch (error) {
+      console.error("Error loading image tensor:", error);
+      return null;
     }
-
-    const imageTensor = tf.tensor(
-      imageArray,
-      [IMAGE_SIZE, IMAGE_SIZE, 3],
-      "float32"
-    );
-
-    return imageTensor;
   };
 
   const processPredictions = (predictions) => {
@@ -60,81 +63,52 @@ const BananaDetector = () => {
     return predictedLabel;
   };
 
-  // const handleImageSelection = async () => {
-  //   try {
-  //     const result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //       quality: 1,
-  //     });
-
-  //     if (!result.canceled) {
-  //       setSelectedImage(result.assets[0].uri);
-
-  //       console.log(result.assets[0]);
-  //       setStatusMessage("");
-  //       setPredictionResult("");
-
-  //       // predictBananaRipeness(result.assets[0].uri);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error selecting image:", error);
-  //   }
-  // };
-
-  // const predictBananaRipeness = async (imageUri) => {
-  //   setStatusMessage("Predicting...");
-
-  //   try {
-  //     const processedImage = await ImageManipulator.manipulateAsync(
-  //       imageUri,
-  //       [{ resize: { width: IMAGE_SIZE, height: IMAGE_SIZE } }],
-  //       { format: ImageManipulator.SaveFormat.PNG } // Specify the save format
-  //     );
-
-  //     const imageTensor = await loadImageTensor(processedImage.assets[0].uri);
-  //     const normalizedImageTensor = imageTensor.div(255.0);
-
-  //     const predictions = model.predict(normalizedImageTensor);
-  //     const ripenessLabel = processPredictions(predictions);
-
-  //     setPredictionResult(ripenessLabel);
-  //     setStatusMessage("Prediction Done!");
-  //   } catch (error) {
-  //     console.error("Error processing image:", error);
-  //     setStatusMessage("Error processing image");
-  //   }
-  // };
-
   const handleImageSelection = async () => {
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1,
-      });
+      const imageUri = "https://i.imgur.com/p7YmjNR.jpg";
 
-      if (result && result.assets && result.assets.length > 0) {
-        const selectedUri = result.assets[0].uri;
-
-        setSelectedImage(selectedUri);
-        setStatusMessage("");
-        setPredictionResult("");
-
-        const resizedImage = await ImageManipulator.manipulateAsync(
-          selectedUri,
-          [{ resize: { width: IMAGE_SIZE, height: IMAGE_SIZE } }],
-          { format: ImageManipulator.SaveFormat.PNG }
-        );
-
-        console.log("resizedImage:", resizedImage);
-
-        if (resizedImage) {
-          predictBananaRipeness(resizedImage.assets[0].uri);
-        }
-      } else {
-        console.log("No image selected");
-      }
+      handleImageResult(imageUri);
     } catch (error) {
       console.error("Error selecting image:", error);
+    }
+  };
+
+  const handleImageResult = async (result) => {
+    // console.log("result:", result);
+    if (result.canceled) {
+      console.log("Image selection canceled");
+      return;
+    }
+
+    const selectedUri = result;
+    setSelectedImage(selectedUri);
+    setStatusMessage("");
+    setPredictionResult("");
+
+    try {
+      const resizedImage = await resizeImage(selectedUri);
+
+      if (resizedImage) {
+        // console.log("resizedImage:", resizedImage);
+        predictBananaRipeness(resizedImage.uri);
+      }
+    } catch (error) {
+      console.error("Error resizing image:", error);
+    }
+  };
+
+  const resizeImage = async (uri) => {
+    console.log("uri:", uri);
+    try {
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        uri,
+        [{ resize: { width: IMAGE_SIZE, height: IMAGE_SIZE } }],
+        { format: ImageManipulator.SaveFormat.JPEG }
+      );
+      return resizedImage;
+    } catch (error) {
+      console.error("Error resizing image:", error);
+      return null;
     }
   };
 
@@ -143,19 +117,19 @@ const BananaDetector = () => {
 
     console.log("processedImage:", processedImage);
 
-    // try {
-    const imageTensor = loadImageTensor(processedImage); // Use processedImage.uri
-    const normalizedImageTensor = imageTensor.div(255.0);
+    try {
+      const imageTensor = await loadImageTensor(processedImage); // Use processedImage.uri
+      const normalizedImageTensor = imageTensor.div(255.0);
 
-    const predictions = model.predict(normalizedImageTensor);
-    const ripenessLabel = processPredictions(predictions);
+      const predictions = model.predict(normalizedImageTensor);
+      const ripenessLabel = processPredictions(predictions);
 
-    setPredictionResult(ripenessLabel);
-    setStatusMessage("Prediction Done!");
-    // // } catch (error) {
-    //   console.error("Error processing image:", error);
-    //   setStatusMessage("Error processing image");
-    // }
+      setPredictionResult(ripenessLabel);
+      setStatusMessage("Prediction Done!");
+    } catch (error) {
+      console.error("Error processing image:", error);
+      setStatusMessage("Error processing image");
+    }
   };
 
   useEffect(() => {
