@@ -4,6 +4,7 @@ import * as tf from "@tensorflow/tfjs";
 import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import * as jpeg from "jpeg-js";
 
 const IMAGE_SIZE = 224;
 
@@ -30,23 +31,37 @@ const BananaDetector = () => {
 
   const loadImageTensor = async (imageUri) => {
     try {
-      const response = await fetch(imageUri);
-      const arrayBuffer = await response.arrayBuffer();
-      const imageArray = new Uint8Array(arrayBuffer);
+      const imageArray = await fetch(imageUri)
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => new Uint8Array(buffer));
 
-      console.log("imageUri:", imageUri);
-      console.log("Image array length:", imageArray.length);
+      console.log("imageArray:", imageArray.length);
 
-      // if (imageArray.length !== IMAGE_SIZE * IMAGE_SIZE * 3) {
-      //   console.error("Incorrect image data length");
-      //   return null;
-      // }
+      const jpegData = jpeg.decode(imageArray, true); // 'true' for JPEG with alpha (transparency)
+      const rgbImageArray = new Uint8Array(
+        jpegData.width * jpegData.height * 3
+      );
+
+      // console.log("Decoded jpegData:", jpegData);
+
+      for (let i = 0; i < jpegData.data.length; i += 4) {
+        rgbImageArray[(i / 4) * 3] = jpegData.data[i]; // Red channel
+        rgbImageArray[(i / 4) * 3 + 1] = jpegData.data[i + 1]; // Green channel
+        rgbImageArray[(i / 4) * 3 + 2] = jpegData.data[i + 2]; // Blue channel
+      }
+
+      // console.log("rgbImageArray:", rgbImageArray.length);
+
+      // Create a TypedArray or flat array from rgbImageArray
+      const flattenedArray = Array.from(rgbImageArray);
+      // console.log(flattenedArray);
 
       const imageTensor = tf.tensor(
-        imageArray,
-        [IMAGE_SIZE, IMAGE_SIZE, 3],
-        "int32"
+        flattenedArray,
+        [1, IMAGE_SIZE, IMAGE_SIZE, 3],
+        "float32"
       );
+      console.log("rgbImageArray:", rgbImageArray.length);
 
       return imageTensor;
     } catch (error) {
@@ -55,9 +70,20 @@ const BananaDetector = () => {
     }
   };
 
+  // const processPredictions = (predictions) => {
+  //   const maxIndex = predictions.argMax(1).dataSync()[0];
+  //   const ripenessLabels = ["Unripe", "Ripe", "Overripe"];
+  //   const predictedLabel = ripenessLabels[maxIndex];
+
+  //   return predictedLabel;
+  // };
+
   const processPredictions = (predictions) => {
-    const maxIndex = predictions.argMax(1).dataSync()[0];
-    const ripenessLabels = ["Green", "Ripe", "Overripe"];
+    const maxIndexTensor = tf.argMax(predictions, 1);
+    const maxIndex = maxIndexTensor.dataSync()[0];
+    maxIndexTensor.dispose(); // Clean up the tensor
+
+    const ripenessLabels = ["Unripe", "Ripe", "Overripe"];
     const predictedLabel = ripenessLabels[maxIndex];
 
     return predictedLabel;
@@ -66,6 +92,7 @@ const BananaDetector = () => {
   const handleImageSelection = async () => {
     try {
       const imageUri = "https://i.imgur.com/p7YmjNR.jpg";
+      // const imageUri = "https://i.imgur.com/pcGf3Qf.png";
 
       handleImageResult(imageUri);
     } catch (error) {
@@ -86,10 +113,11 @@ const BananaDetector = () => {
     setPredictionResult("");
 
     try {
+      // const resizedImage = await resizeImage(selectedUri);
       const resizedImage = await resizeImage(selectedUri);
 
       if (resizedImage) {
-        // console.log("resizedImage:", resizedImage);
+        // console.log("resizedImage:", resizedImage.uri);
         predictBananaRipeness(resizedImage.uri);
       }
     } catch (error) {
@@ -98,7 +126,7 @@ const BananaDetector = () => {
   };
 
   const resizeImage = async (uri) => {
-    console.log("uri:", uri);
+    // console.log("uri:", uri);
     try {
       const resizedImage = await ImageManipulator.manipulateAsync(
         uri,
@@ -115,11 +143,15 @@ const BananaDetector = () => {
   const predictBananaRipeness = async (processedImage) => {
     setStatusMessage("Predicting...");
 
-    console.log("processedImage:", processedImage);
+    // console.log("processedImage:", processedImage);
 
     try {
       const imageTensor = await loadImageTensor(processedImage); // Use processedImage.uri
-      const normalizedImageTensor = imageTensor.div(255.0);
+      // console.log("ImageTensor:", imageTensor.arraySync());
+
+      const normalizedImageTensor = tf.div(imageTensor, 255.0);
+      // console.log("normalizedImageTensor:", normalizedImageTensor.arraySync());
+      // const normalizedImageArray = normalizedImageTensor.arraySync();
 
       const predictions = model.predict(normalizedImageTensor);
       const ripenessLabel = processPredictions(predictions);
