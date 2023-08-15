@@ -5,6 +5,7 @@ import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as jpeg from "jpeg-js";
+import * as FileSystem from 'expo-file-system';
 
 const IMAGE_SIZE = 224;
 
@@ -31,13 +32,13 @@ const BananaDetector = () => {
 
   const loadImageTensor = async (imageUri) => {
     try {
-      const imageArray = await fetch(imageUri)
-        .then((response) => response.arrayBuffer())
-        .then((buffer) => new Uint8Array(buffer));
+      const img64 = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const imgBuffer = tf.util.encodeString(img64, "base64").buffer;
+      const raw = new Uint8Array(imgBuffer);
 
-      console.log("imageArray:", imageArray.length);
-
-      const jpegData = jpeg.decode(imageArray, true); // 'true' for JPEG with alpha (transparency)
+      const jpegData = jpeg.decode(raw, true); // 'true' for JPEG with alpha (transparency)
       const rgbImageArray = new Uint8Array(
         jpegData.width * jpegData.height * 3
       );
@@ -91,8 +92,8 @@ const BananaDetector = () => {
 
   const handleImageSelection = async () => {
     try {
-      const imageUri = "https://i.imgur.com/p7YmjNR.jpg";
-      // const imageUri = "https://i.imgur.com/pcGf3Qf.png";
+      //const imageUri = "https://i.imgur.com/p7YmjNR.jpg";
+      const imageUri = "https://i.imgur.com/pcGf3Qf.png";
 
       handleImageResult(imageUri);
     } catch (error) {
