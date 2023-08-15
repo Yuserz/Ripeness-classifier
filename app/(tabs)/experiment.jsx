@@ -1,84 +1,148 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
 import * as tf from "@tensorflow/tfjs";
-import "@tensorflow/tfjs-react-native";
-import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
 import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import * as jpeg from "jpeg-js";
+import * as FileSystem from "expo-file-system";
 
 const IMAGE_SIZE = 224;
-const CLASS_LABELS = {
-  0: "green",
-  1: "overripe",
-  2: "ripe",
-};
 
 const BananaDetector = () => {
   const [model, setModel] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
   const [predictionResult, setPredictionResult] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
 
-  //Loading model from models folder
-  const modelJSON = require("../../assets/model/model.json");
-  const modelWeights = require("../../assets/model/weights.bin");
-
-  // Load the model from the models folder
   const loadModel = async () => {
     setStatusMessage("Loading model...");
-    await tf.ready(); // Ensure TensorFlow is ready
+    await tf.ready();
 
-    const model = await tf
-      .loadLayersModel(bundleResourceIO(modelJSON, modelWeights))
-      .catch((e) => console.log(e));
-    console.log("Model loaded!");
-    setStatusMessage("");
+    const modelJSON = require("../../assets/model/model.json");
+    const modelWeights = require("../../assets/model/weights.bin");
+
+    const loadedModel = await tf.loadLayersModel(
+      bundleResourceIO(modelJSON, modelWeights)
+    );
+
+    setModel(loadedModel);
     setStatusMessage("Model Loaded!");
-    return model;
   };
 
-  // const predict = async (imageUri) => {
-  //   setStatusMessage("Predicting...");
+  const loadImageTensor = async (imageUri) => {
+    try {
+      const img64 = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const imgBuffer = tf.util.encodeString(img64, "base64").buffer;
+      const raw = new Uint8Array(imgBuffer);
 
-  //   await tf.ready(); // Ensure TensorFlow is ready
+      const jpegData = jpeg.decode(raw, true); // 'true' for JPEG with alpha (transparency)
+      const rgbImageArray = new Uint8Array(
+        jpegData.width * jpegData.height * 3
+      );
 
-  //   const img = await Image.loadAsync(imageUri);
-  //   const imgTensor = tf.browser.fromPixels(img);
-  //   const offset = tf.scalar(127.5);
-  //   const normalized = imgTensor.sub(offset).div(offset);
-  //   const batched = normalized.expandDims(0);
+      for (let i = 0; i < jpegData.data.length; i += 4) {
+        rgbImageArray[(i / 4) * 3] = jpegData.data[i]; // Red channel
+        rgbImageArray[(i / 4) * 3 + 1] = jpegData.data[i + 1]; // Green channel
+        rgbImageArray[(i / 4) * 3 + 2] = jpegData.data[i + 2]; // Blue channel
+      }
 
-  //   const logits = tf.tidy(() => model.predict(batched));
-  //   showResult(logits);
-  //   logits.dispose(); // Clean up memory
-  // };
+      const flattenedArray = Array.from(rgbImageArray);
 
-  // const showResult = async (logits) => {
-  //   const messages = [
-  //     "This banana looks a little green! Wait a little longer before eating it.",
-  //     "This banana looks rotten or overripe. I would not eat it if I were you.",
-  //     "Yum! Looks ripe to me!",
-  //   ];
+      const imageTensor = tf.tensor(
+        flattenedArray,
+        [1, IMAGE_SIZE, IMAGE_SIZE, 3],
+        "float32"
+      );
+      console.log("rgbImageArray:", rgbImageArray.length);
 
-  //   const classIdx = (await logits.argMax(1).data())[0];
-  //   setPredictionResult(messages[classIdx]);
-  // };
+      return imageTensor;
+    } catch (error) {
+      console.error("Error loading image tensor:", error);
+      return null;
+    }
+  };
 
-  // const handleImageSelection = async () => {
-  //   const permissionResult =
-  //     await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const processPredictions = (predictions) => {
+    const maxIndexTensor = tf.argMax(predictions, 1);
+    const maxIndex = maxIndexTensor.dataSync()[0];
+    maxIndexTensor.dispose(); // Clean up the tensor
 
-  //   if (!permissionResult.granted) {
-  //     alert("Permission to access media library is required!");
-  //     return;
-  //   }
+    const ripenessLabels = ["Unripe", "Ripe", "Overripe"];
+    const predictedLabel = ripenessLabels[maxIndex];
 
-  //   const pickerResult = await ImagePicker.launchImageLibraryAsync();
-  //   if (!pickerResult.canceled) {
-  //     const selectedAsset = pickerResult.assets[0]; // Access the first selected asset
-  //     setSelectedImage(selectedAsset.uri);
-  //     predict(selectedAsset.uri);
-  //   }
-  // };
+    return predictedLabel;
+  };
+
+  const handleImageSelection = async () => {
+    try {
+      //const imageUri = "https://i.imgur.com/p7YmjNR.jpg";
+      const imageUri = "https://i.imgur.com/pcGf3Qf.png";
+
+      handleImageResult(imageUri);
+    } catch (error) {
+      console.error("Error selecting image:", error);
+    }
+  };
+
+  const handleImageResult = async (result) => {
+    // console.log("result:", result);
+    if (result.canceled) {
+      console.log("Image selection canceled");
+      return;
+    }
+
+    const selectedUri = result;
+    setSelectedImage(selectedUri);
+    setStatusMessage("");
+    setPredictionResult("");
+
+    try {
+      // const resizedImage = await resizeImage(selectedUri);
+      const resizedImage = await resizeImage(selectedUri);
+
+      if (resizedImage) {
+        // console.log("resizedImage:", resizedImage.uri);
+        predictBananaRipeness(resizedImage.uri);
+      }
+    } catch (error) {
+      console.error("Error resizing image:", error);
+    }
+  };
+
+  const resizeImage = async (uri) => {
+    // console.log("uri:", uri);
+    try {
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        uri,
+        [{ resize: { width: IMAGE_SIZE, height: IMAGE_SIZE } }],
+        { format: ImageManipulator.SaveFormat.JPEG }
+      );
+      return resizedImage;
+    } catch (error) {
+      console.error("Error resizing image:", error);
+      return null;
+    }
+  };
+
+  const predictBananaRipeness = async (processedImage) => {
+    setStatusMessage("Predicting...");
+
+    try {
+      const imageTensor = await loadImageTensor(processedImage); // Use processedImage.uri
+      const normalizedImageTensor = tf.div(imageTensor, 255.0);
+      const predictions = model.predict(normalizedImageTensor);
+      const ripenessLabel = processPredictions(predictions);
+
+      setPredictionResult(ripenessLabel);
+      setStatusMessage("Prediction Done!");
+    } catch (error) {
+      console.error("Error processing image:", error);
+      setStatusMessage("Error processing image");
+    }
+  };
 
   useEffect(() => {
     loadModel();
@@ -86,7 +150,7 @@ const BananaDetector = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Button title="Select Image" onPress={handleImageSelection} /> */}
+      <Button title="Select Image" onPress={handleImageSelection} />
 
       {selectedImage && (
         <Image
