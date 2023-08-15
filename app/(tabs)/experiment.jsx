@@ -5,7 +5,7 @@ import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as jpeg from "jpeg-js";
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from "expo-file-system";
 
 const IMAGE_SIZE = 224;
 
@@ -43,19 +43,13 @@ const BananaDetector = () => {
         jpegData.width * jpegData.height * 3
       );
 
-      // console.log("Decoded jpegData:", jpegData);
-
       for (let i = 0; i < jpegData.data.length; i += 4) {
         rgbImageArray[(i / 4) * 3] = jpegData.data[i]; // Red channel
         rgbImageArray[(i / 4) * 3 + 1] = jpegData.data[i + 1]; // Green channel
         rgbImageArray[(i / 4) * 3 + 2] = jpegData.data[i + 2]; // Blue channel
       }
 
-      // console.log("rgbImageArray:", rgbImageArray.length);
-
-      // Create a TypedArray or flat array from rgbImageArray
       const flattenedArray = Array.from(rgbImageArray);
-      // console.log(flattenedArray);
 
       const imageTensor = tf.tensor(
         flattenedArray,
@@ -70,14 +64,6 @@ const BananaDetector = () => {
       return null;
     }
   };
-
-  // const processPredictions = (predictions) => {
-  //   const maxIndex = predictions.argMax(1).dataSync()[0];
-  //   const ripenessLabels = ["Unripe", "Ripe", "Overripe"];
-  //   const predictedLabel = ripenessLabels[maxIndex];
-
-  //   return predictedLabel;
-  // };
 
   const processPredictions = (predictions) => {
     const maxIndexTensor = tf.argMax(predictions, 1);
@@ -144,16 +130,9 @@ const BananaDetector = () => {
   const predictBananaRipeness = async (processedImage) => {
     setStatusMessage("Predicting...");
 
-    // console.log("processedImage:", processedImage);
-
     try {
       const imageTensor = await loadImageTensor(processedImage); // Use processedImage.uri
-      // console.log("ImageTensor:", imageTensor.arraySync());
-
       const normalizedImageTensor = tf.div(imageTensor, 255.0);
-      // console.log("normalizedImageTensor:", normalizedImageTensor.arraySync());
-      // const normalizedImageArray = normalizedImageTensor.arraySync();
-
       const predictions = model.predict(normalizedImageTensor);
       const ripenessLabel = processPredictions(predictions);
 
