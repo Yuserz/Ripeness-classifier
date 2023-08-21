@@ -9,8 +9,8 @@ import React, { useState } from "react";
 import { Link } from "expo-router";
 
 //components
-import { colors } from "../../constants/Colors";
-import StatusBarStyle from "../../components/StatusBarStyle";
+import { colors } from "constants/Colors";
+import StatusBarStyle from "../components/StatusBarStyle";
 
 export default function ScanTab() {
   return (
