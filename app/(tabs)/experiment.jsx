@@ -14,7 +14,7 @@ const BananaDetector = () => {
     labels,
   });
 
-  const [{prediction, accuracy}, setResult] = useState("");
+  const [{ prediction, accuracy }, setResult] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
 
   const handleImageSelection = async () => {
@@ -33,8 +33,8 @@ const BananaDetector = () => {
     try {
       const imageTensor = await convertToTensor(imageUri);
       const { accuracy, prediction } = await predict(imageTensor);
-      console.log({accuracy, prediction});
-      setResult({prediction, accuracy})
+      console.log({ accuracy, prediction });
+      setResult({ prediction, accuracy });
     } catch (e) {
       console.log(e);
     }

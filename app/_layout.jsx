@@ -50,9 +50,21 @@ function RootLayoutNav() {
 
   return (
     <ThemeContext.Provider value={DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)/scan-tab" options={{ headerShown: false }} />
+      <Stack
+        screenOptions={{ statusBarHidden: true, statusBarColor: "#481620" }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="(tabs)/scan-tab"
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="(tabs)/experiment"
           options={{ headerShown: false }}
