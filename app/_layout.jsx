@@ -50,9 +50,7 @@ function RootLayoutNav() {
 
   return (
     <ThemeContext.Provider value={DefaultTheme}>
-      <Stack
-        screenOptions={{ statusBarHidden: true, statusBarColor: "#481620" }}
-      >
+      <Stack screenOptions={{ statusBarHidden: true, statusBarColor: "#fff" }}>
         <Stack.Screen
           name="index"
           options={{

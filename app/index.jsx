@@ -3,8 +3,8 @@ import React from "react";
 import { Link } from "expo-router";
 
 //components
-import View from "../components/ThemedView";
-import Text from "../components/ThemedText";
+import View from "components/ThemedView";
+import Text from "components/ThemedText";
 
 export default function index() {
   return (
@@ -18,7 +18,6 @@ export default function index() {
       </View>
       <View style={styles.btnContainer}>
         <Link href={"/experiment"} asChild>
-          {/* <Link href={"/scan-tab"} asChild> */}
           <TouchableOpacity style={styles.button}>
             <Text style={styles.btnText}>START</Text>
           </TouchableOpacity>

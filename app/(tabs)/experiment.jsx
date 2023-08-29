@@ -4,8 +4,8 @@ import { useModel } from "../../hooks/useModel";
 import * as ImagePicker from "expo-image-picker";
 
 const BananaDetector = () => {
-  const model = require("../../assets/model/model.json");
-  const weights = require("../../assets/model/weights.bin");
+  const model = require("assets/model/model.json");
+  const weights = require("assets/model/weights.bin");
   const labels = ["Unripe", "Ripe", "Overripe"];
 
   const { isLoaded, convertToTensor, predict } = useModel({
@@ -42,20 +42,18 @@ const BananaDetector = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="Select Image" onPress={handleImageSelection} />
-
       {selectedImage && (
         <Image
           source={{ uri: selectedImage }}
           style={{ width: 224, height: 224 }}
         />
       )}
+      <Button title="Select Image" onPress={handleImageSelection} />
 
       <Text>
         Status: {isLoaded ? "Model loaded!" : "Model is being loaded..."}
       </Text>
       <Text>Prediction: {prediction}</Text>
-      <Text>Accuracy: {accuracy}%</Text>
     </View>
   );
 };
@@ -67,6 +65,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     paddingHorizontal: 20,
     backgroundColor: "#F0F0F0",
+    alignItems: "center",
+    gap: 20,
   },
 });
 
