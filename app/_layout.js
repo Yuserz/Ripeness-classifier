@@ -1,9 +1,8 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 //components
 import ThemeContext from "../context/ThemeContext";
 import DefaultTheme from "../constants/Theme";
@@ -45,27 +44,26 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const x = 10;
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
     <ThemeContext.Provider value={DefaultTheme}>
-      <Stack screenOptions={{ statusBarHidden: true, statusBarColor: "#fff" }}>
+      <Stack screenOptions={{ statusBarHidden: true, statusBarColor: "#000" }}>
         <Stack.Screen
           name="index"
           options={{
             headerShown: false,
           }}
         />
+        <Stack.Screen name="(tabs)/sample" options={{ headerShown: false }} />
         <Stack.Screen
           name="(tabs)/scan-tab"
           options={{
             headerShown: false,
           }}
-        />
-        <Stack.Screen
-          name="(tabs)/experiment"
-          options={{ headerShown: false }}
         />
       </Stack>
     </ThemeContext.Provider>

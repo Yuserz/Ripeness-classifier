@@ -6,6 +6,7 @@ import { Link } from "expo-router";
 import View from "components/ThemedView";
 import Text from "components/ThemedText";
 
+const y = 20;
 export default function index() {
   return (
     <View style={styles.container}>
@@ -17,7 +18,8 @@ export default function index() {
         </Text>
       </View>
       <View style={styles.btnContainer}>
-        <Link href={"/experiment"} asChild>
+        <Link href={"/sample"} asChild>
+          {/* <Link href={"/scan-tab"} asChild> */}
           <TouchableOpacity style={styles.button}>
             <Text style={styles.btnText}>START</Text>
           </TouchableOpacity>

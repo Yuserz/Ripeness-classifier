@@ -16,7 +16,7 @@ expo cli - (installed using npx create-expo-app@latest --template tabs@49)
 
 ```
 
-#### This includes the routing system of the app which is a folder based one.
+#### This includes the routing system of the app(folder based)
 
 ## Installation
 
@@ -41,7 +41,7 @@ yarn test
 ## Folder structure
 
 ```
-car-rental/
+Ripeness-classification/
   ├── .expo/
   ├── app
   │   ├── (tabs)
