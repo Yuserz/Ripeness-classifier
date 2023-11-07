@@ -1,12 +1,13 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
-import { useEffect } from "react";
+import { Slot, SplashScreen, Stack } from "expo-router";
+import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 
 //components
 import ThemeContext from "../context/ThemeContext";
 import DefaultTheme from "../constants/Theme";
+import { DarkTheme } from "../constants/DarkTheme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,6 +28,9 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const colorScheme = useColorScheme();
+  const [theme, setTheme] = useState(DefaultTheme);
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -39,35 +43,27 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) {
-    return null;
+    return <Slot />;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const onThemeChange = (theme) => {
+    if (theme === "light") setTheme(DefaultTheme);
+  };
 
   return (
-    <ThemeContext.Provider value={DefaultTheme}>
+    <ThemeContext.Provider value={{ theme, onThemeChange }}>
       <Stack
-        screenOptions={{ statusBarHidden: true, statusBarColor: "#481620" }}
+        screenOptions={{
+          statusBarHidden: false,
+          statusBarColor: theme.primary,
+          statusBarTranslucent: true,
+        }}
       >
         <Stack.Screen
-          name="index"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
-        />
-        <Stack.Screen
-          name="(tabs)/scan-tab"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="(tabs)/experiment"
-          options={{ headerShown: false }}
         />
       </Stack>
     </ThemeContext.Provider>
