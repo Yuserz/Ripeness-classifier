@@ -1,11 +1,10 @@
 import React from "react";
 import { View, Modal, ActivityIndicator, StyleSheet } from "react-native";
-import { colors } from "../constants/Colors";
 
 const LoadingAnimation = ({ isVisible }) => (
-  <Modal transparent={true} visible={isVisible}>
+  <Modal transparent={false} visible={isVisible}>
     <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color={colors.blue.slitedark} />
+      <ActivityIndicator size="large" color="black" />
     </View>
   </Modal>
 );
@@ -15,7 +14,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

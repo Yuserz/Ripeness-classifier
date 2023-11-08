@@ -4,7 +4,7 @@ import { useTheme } from "../hooks/useTheme";
 export const Button = (props) => {
   const { theme } = useTheme();
 
-  const { style, ...otherProps } = props;
+  const { style, icon, ...otherProps } = props;
 
   const themeStyle = StyleSheet.create({
     button: {

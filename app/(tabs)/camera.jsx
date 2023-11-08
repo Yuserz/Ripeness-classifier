@@ -1,14 +1,26 @@
 import { useState } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useModel } from "../../hooks/useModel";
 import * as ImagePicker from "expo-image-picker";
-import { Layout, Button, Header, ImageView } from "../../components";
+import {
+  Layout,
+  Button,
+  Header,
+  ImageView,
+  Text,
+  SubButton,
+  LoadingAnimation
+} from "../../components";
+import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "expo-router/src/useNavigation";
 
 const model = require("../../assets/model/model.json");
 const weights = require("../../assets/model/weights.bin");
-const labels = ["Unripe", "Ripe", "Overripe"];
+const labels = ["unripe", "ripe", "overripe"];
 
 const BananaDetector = () => {
+  const navigation = useNavigation();
+
   const { isLoaded, convertToTensor, predict } = useModel({
     model,
     weights,
@@ -34,8 +46,14 @@ const BananaDetector = () => {
     try {
       const imageTensor = await convertToTensor(imageUri);
       const { accuracy, prediction } = await predict(imageTensor);
-      console.log({ accuracy, prediction });
+      //console.log({ accuracy, prediction });
       setResult({ prediction, accuracy });
+
+      navigation.navigate("output", {
+        image: imageUri,
+        prediction,
+        accuracy,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -43,17 +61,15 @@ const BananaDetector = () => {
 
   return (
     <Layout>
+      {/* <LoadingAnimation /> */}
       <Header>UPLOAD SCREEN</Header>
       <ImageView image={selectedImage} />
-      <Text style={style.text}>
-        Start classifying bananas' ripeness{" "}
-        <Text style={style.text2}>by pressing the buttons below.</Text>
-      </Text>
-      <View style={style.buttonContainer}>
-        <Button onPress={handleImageSelection}>Capture</Button>
-        <Button onPress={handleImageSelection} style={style.button}>
-          Upload
+      <Text style={style.text}>Capture or upload an image of banana to start.</Text>
+      <View style={style.bottonContainer}>
+        <Button onPress={handleImageSelection} icon={<Entypo name="camera" />}>
+          Capture
         </Button>
+        <SubButton onPress={handleImageSelection}>Upload Image</SubButton>
       </View>
     </Layout>
   );
@@ -62,20 +78,15 @@ const BananaDetector = () => {
 const style = StyleSheet.create({
   text: {
     fontSize: 16,
-    fontWeight: "bold",
     textAlign: "center",
   },
-  text2: {
-    fontSize: 16,
-    fontWeight: "normal",
-    textAlign: "center",
-  },
-  buttonContainer: {
+  bottonContainer: {
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    height: "45%",
-    rowGap: 12,
+    rowGap: 5,
+    position: "absolute",
+    height: 200,
+    bottom: 0,
   },
   button: {
     width: 175,

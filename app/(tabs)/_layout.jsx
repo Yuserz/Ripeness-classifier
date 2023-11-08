@@ -11,7 +11,7 @@ export default () => {
         tabBarStyle: { backgroundColor: theme.primary, height: 64 },
         tabBarShowLabel: false,
         tabBarActiveTintColor: theme.accent,
-        tabBarInactiveTintColor: theme.background,
+        tabBarInactiveTintColor: theme.secondary,
         headerShown: false,
       }}
     >

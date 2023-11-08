@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, Pressable, View, Text } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 import { useTheme } from "../../hooks/useTheme";
@@ -8,7 +8,14 @@ export default function Splash() {
 
   const themeStyle = StyleSheet.create({
     container: { backgroundColor: theme.primary },
-    text: { color: theme.background },
+    text: { color: theme.secondary },
+    buttonText: { color: theme.primary },
+    button: {
+      alignItems: "center",
+      borderRadius: 30,
+      width: 170,
+      backgroundColor: theme.secondary,
+    },
   });
 
   return (
@@ -23,9 +30,9 @@ export default function Splash() {
       <View style={styles.btnContainer}>
         <Link href={"/camera"} asChild>
           {/* <Link href={"/scan-tab"} asChild> */}
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.btnText}>START</Text>
-          </TouchableOpacity>
+          <Pressable style={themeStyle.button}>
+            <Text style={[styles.btnText, themeStyle.buttonText]}>START</Text>
+          </Pressable>
         </Link>
       </View>
     </View>
@@ -60,11 +67,5 @@ const styles = StyleSheet.create({
   btnContainer: {
     height: "20%",
     alignItems: "center",
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    width: 150,
   },
 });
