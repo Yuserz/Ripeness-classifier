@@ -50,6 +50,14 @@ export default () => {
           tabBarStyle: { display: "none" },
         }}
       />
+      <Tabs.Screen
+        name="cameraView"
+        options={{
+          href: null,
+          headerShown: false,
+          tabBarStyle: { display: "none" },
+        }}
+      />
     </Tabs>
   );
 };

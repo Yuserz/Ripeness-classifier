@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useModel } from "../../hooks/useModel";
 import * as ImagePicker from "expo-image-picker";
@@ -12,7 +12,8 @@ import {
   LoadingAnimation,
 } from "../../components";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router/src/useNavigation";
+import { useNavigation } from "expo-router";
+import { useRoute } from "@react-navigation/native";
 
 const model = require("../../assets/model/model.json");
 const weights = require("../../assets/model/weights.bin");
@@ -20,6 +21,7 @@ const labels = ["unripe", "ripe", "overripe"];
 
 const BananaDetector = () => {
   const navigation = useNavigation();
+  const route = useRoute();
 
   const { convertToTensor, predict } = useModel({
     model,
@@ -31,6 +33,13 @@ const BananaDetector = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!route.params?.image) return;
+
+    setSelectedImage(route.params?.image);
+    startPrediction(route.params?.image);
+  }, [route.params?.image]);
 
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -83,7 +92,12 @@ const BananaDetector = () => {
         Capture or upload an image of banana to start.
       </Text>
       <View style={style.bottonContainer}>
-        <Button onPress={handleImageSelection} icon={<Entypo name="camera" />}>
+        <Button
+          onPress={() => {
+            navigation.navigate("cameraView");
+          }}
+          icon={<Entypo name="camera" />}
+        >
           Capture
         </Button>
         <SubButton onPress={handleImageSelection}>Upload Image</SubButton>

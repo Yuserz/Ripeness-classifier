@@ -30,7 +30,7 @@ export default function Result() {
         <Percent percent={accuracy?.toFixed(0) || 0} />
         <SubButton
           onPress={() => {
-            navigation.navigate("camera");
+            navigation.navigate("camera", {});
           }}
         >
           Scan Again
