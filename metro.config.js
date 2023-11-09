@@ -7,7 +7,7 @@ module.exports = (async () => {
 
   return {
     resolver: {
-      assetExts: [...assetExts, "bin"], // Add "bin" extension to the assetExts array
+      assetExts: [...assetExts, "bin", "json"], // Add "bin" extension to the assetExts array
     },
   };
 })();

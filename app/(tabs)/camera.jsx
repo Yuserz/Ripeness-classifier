@@ -9,7 +9,7 @@ import {
   ImageView,
   Text,
   SubButton,
-  LoadingAnimation
+  LoadingAnimation,
 } from "../../components";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "expo-router/src/useNavigation";
@@ -21,7 +21,7 @@ const labels = ["unripe", "ripe", "overripe"];
 const BananaDetector = () => {
   const navigation = useNavigation();
 
-  const { isLoaded, convertToTensor, predict } = useModel({
+  const { convertToTensor, predict } = useModel({
     model,
     weights,
     labels,
@@ -29,6 +29,8 @@ const BananaDetector = () => {
 
   const [{ prediction, accuracy }, setResult] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -38,33 +40,48 @@ const BananaDetector = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
-      startPrediction(result.assets[0].uri);
+      setTimeout(() => {
+        startPrediction(result.assets[0].uri);
+      }, 300);
     }
   };
 
   const startPrediction = async (imageUri) => {
     try {
+      setIsProcessing(true);
+      setIsLoading(true);
       const imageTensor = await convertToTensor(imageUri);
       const { accuracy, prediction } = await predict(imageTensor);
-      //console.log({ accuracy, prediction });
+      if (!accuracy || !prediction) throw new Error("No prediction");
       setResult({ prediction, accuracy });
-
-      navigation.navigate("output", {
-        image: imageUri,
-        prediction,
-        accuracy,
-      });
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsProcessing(false);
     }
+  };
+
+  const onLoadingFinish = () => {
+    setIsLoading(false);
+    navigation.navigate("output", {
+      image: selectedImage,
+      prediction,
+      accuracy,
+    });
   };
 
   return (
     <Layout>
-      {/* <LoadingAnimation /> */}
+      <LoadingAnimation
+        isLoading={isLoading}
+        isPlaying={isProcessing}
+        onFinish={onLoadingFinish}
+      />
       <Header>UPLOAD SCREEN</Header>
       <ImageView image={selectedImage} />
-      <Text style={style.text}>Capture or upload an image of banana to start.</Text>
+      <Text style={style.text}>
+        Capture or upload an image of banana to start.
+      </Text>
       <View style={style.bottonContainer}>
         <Button onPress={handleImageSelection} icon={<Entypo name="camera" />}>
           Capture
