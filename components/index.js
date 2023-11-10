@@ -6,4 +6,6 @@ export { Text } from "./Text";
 export { Percent } from "./Percent";
 export { Listen } from "./Listen";
 export { SubButton } from "./SubButton";
+export { ThemeSelector } from "./ThemeSelector";
+export { ModeSelector } from "./ModeSelector";
 export { default as LoadingAnimation } from "./LoadingAnimation";

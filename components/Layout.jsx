@@ -8,9 +8,9 @@ export const Layout = (props) => {
   const style = StyleSheet.create({
     container: {
       backgroundColor: theme.background,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
+      width: "100%",
+      height: "100%",
+      display: "flex",
       alignItems: "center",
       paddingHorizontal: 20,
       paddingTop: 36,

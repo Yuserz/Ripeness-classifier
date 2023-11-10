@@ -6,8 +6,7 @@ import { useColorScheme } from "react-native";
 
 //components
 import ThemeContext from "../context/ThemeContext";
-import DefaultTheme from "../constants/Theme";
-import { DarkTheme } from "../constants/DarkTheme";
+import { Default } from "../constants/Themes";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,7 +28,9 @@ export default function RootLayout() {
   });
 
   const colorScheme = useColorScheme();
-  const [theme, setTheme] = useState(DefaultTheme);
+  const [selected, setSelected] = useState(Default);
+  const [theme, setTheme] = useState(Default[colorScheme]);
+  const [mode, setMode] = useState("system");
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -47,16 +48,29 @@ export default function RootLayout() {
   }
 
   const onThemeChange = (theme) => {
-    if (theme === "light") setTheme(DefaultTheme);
+    if (mode === "system") {
+      setTheme(theme[colorScheme]);
+      return;
+    }
+    setSelected(theme);
+    setTheme(theme[mode]);
+  };
+
+  const onModeChange = (value) => {
+    if (value === "system") {
+      setTheme(selected[colorScheme]);
+      setMode(value);
+      return;
+    }
+    setTheme(selected[value]);
+    setMode(value);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, onThemeChange }}>
+    <ThemeContext.Provider value={{ theme, mode, onThemeChange, onModeChange }}>
       <Stack
         screenOptions={{
-          statusBarHidden: false,
           statusBarColor: theme.primary,
-          statusBarTranslucent: true,
         }}
       >
         <Stack.Screen

@@ -1,9 +1,11 @@
 import { createContext } from "react";
-import DefaultTheme from "../constants/Theme";
+import { Default } from "../constants/Themes";
 
 const ThemeContext = createContext({
-  theme: DefaultTheme,
+  theme: Default.light,
+  mode: "system",
   onThemeChange: () => {},
+  onModeChange: () => {},
 });
 
 export default ThemeContext;

@@ -3,7 +3,7 @@ import { Entypo } from "@expo/vector-icons";
 import { useTheme } from "../../hooks/useTheme";
 
 export default () => {
-  const { theme } = useTheme();
+  const { theme, mode } = useTheme();
 
   return (
     <Tabs
@@ -15,15 +15,6 @@ export default () => {
         headerShown: false,
       }}
     >
-      <Tabs.Screen
-        name="home"
-        options={{
-          href: "/home",
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="home" size={size} color={color} />
-          ),
-        }}
-      />
       <Tabs.Screen
         name="camera"
         options={{
@@ -39,6 +30,15 @@ export default () => {
           href: "/output",
           tabBarIcon: ({ color, size }) => (
             <Entypo name="text-document-inverted" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          href: "/settings",
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="cog" size={size} color={color} />
           ),
         }}
       />

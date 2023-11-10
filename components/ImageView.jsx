@@ -3,10 +3,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../hooks/useTheme";
 
 export const ImageView = ({ image }) => {
-  const { theme } = useTheme();
+  const { theme, mode } = useTheme();
+  const color = mode === "light" ? theme.secondary : theme.primary;
 
   const themeStyle = StyleSheet.create({
-    background: { backgroundColor: theme.secondary },
+    background: { backgroundColor: color },
   });
 
   return (

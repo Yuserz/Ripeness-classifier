@@ -5,8 +5,9 @@ import * as Speech from "expo-speech";
 import { useState, useEffect } from "react";
 
 export const Listen = ({ context }) => {
-  const { theme } = useTheme();
+  const { theme, mode } = useTheme();
   const [isPlaying, setIsPlaying] = useState(false);
+  const color = mode === "light" ? theme.primary : theme.text;
 
   const style = StyleSheet.create({
     container: {
@@ -14,10 +15,10 @@ export const Listen = ({ context }) => {
       flexDirection: "row",
       alignItems: "center",
       columnGap: 6,
-      opacity: 0.7,
+      opacity: 0.8,
     },
     text: {
-      color: theme.primary,
+      color: color,
       fontSize: 16,
       fontWeight: "bold",
     },
@@ -40,9 +41,9 @@ export const Listen = ({ context }) => {
   return (
     <Pressable style={style.container} onPress={speak}>
       {isPlaying ? (
-        <Ionicons name="volume-mute" size={28} color={theme.primary} />
+        <Ionicons name="volume-mute" size={28} color={color} />
       ) : (
-        <Ionicons name="volume-high-outline" size={28} color={theme.primary} />
+        <Ionicons name="volume-high-outline" size={28} color={color} />
       )}
 
       <Text style={style.text}>Listen</Text>
