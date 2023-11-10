@@ -21,7 +21,11 @@ export default function Result() {
     <Layout>
       <Header>RESULT</Header>
       <ImageView image={image} />
-      <Listen />
+      <Listen
+        context={
+          predictionList.find((pred) => pred.id === prediction)?.description
+        }
+      />
       <Text style={style.description}>
         {predictionList.find((pred) => pred.id === prediction)?.description}
       </Text>

@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet } from "react-native";
+import { Pressable, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../hooks/useTheme";
+import * as Speech from "expo-speech";
+import { useState, useEffect } from "react";
 
-export const Listen = () => {
+export const Listen = ({ context }) => {
   const { theme } = useTheme();
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const style = StyleSheet.create({
     container: {
@@ -20,10 +23,29 @@ export const Listen = () => {
     },
   });
 
+  const speak = async () => {
+    if (context) {
+      if (await Speech.isSpeakingAsync()) {
+        Speech.stop();
+        return;
+      }
+      Speech.speak(context, {
+        onStopped: () => setIsPlaying(false),
+        onStart: () => setIsPlaying(true),
+        onDone: () => setIsPlaying(false),
+      });
+    }
+  };
+
   return (
-    <View style={style.container}>
-      <Ionicons name="volume-high-outline" size={28} color={theme.primary} />
+    <Pressable style={style.container} onPress={speak}>
+      {isPlaying ? (
+        <Ionicons name="volume-mute" size={28} color={theme.primary} />
+      ) : (
+        <Ionicons name="volume-high-outline" size={28} color={theme.primary} />
+      )}
+
       <Text style={style.text}>Listen</Text>
-    </View>
+    </Pressable>
   );
 };
