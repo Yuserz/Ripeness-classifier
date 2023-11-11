@@ -49,6 +49,7 @@ export default function RootLayout() {
 
   const onThemeChange = (theme) => {
     if (mode === "system") {
+      setSelected(theme);
       setTheme(theme[colorScheme]);
       return;
     }
