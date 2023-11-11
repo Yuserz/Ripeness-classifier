@@ -12,14 +12,20 @@ export const ThemeSelector = () => {
       {themes.map((t, index) => {
         const temp = t.light;
 
-        const background = StyleSheet.create({
-          background: { backgroundColor: temp.primary },
+        const themeStyle = StyleSheet.create({
+          background: {
+            backgroundColor: temp.primary,
+            borderColor:
+              mode === "light"
+                ? "rgba(0, 0, 0, .2)"
+                : "rgba(255, 255, 255, .3)",
+          },
         });
 
         return (
           <Pressable
             key={index}
-            style={[styles.preview, background.background]}
+            style={[styles.preview, themeStyle.background]}
             onPress={() => onThemeChange(t)}
           >
             {theme === t[mode === "system" ? colorScheme : mode] && (
