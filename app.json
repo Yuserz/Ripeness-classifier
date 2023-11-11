@@ -1,6 +1,10 @@
 {
   "expo": {
-    "assets": ["./assets/model/model.json", "./assets/model/weights.bin", "./assets/animations/loading.json"],
+    "assets": [
+      "./assets/model/model.json",
+      "./assets/model/weights.bin",
+      "./assets/animations/loading.json"
+    ],
     "name": "banana-ripeness",
     "slug": "banana-ripeness",
     "version": "1.0.0",
@@ -13,7 +17,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -21,16 +27,34 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.banana200.bananaripeness"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", ["expo-camera",
-    {
-      "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
-    }]]
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2fd56aea-89c6-4cdc-b7c9-0dc68f7e6dcf"
+      }
+    }
   }
 }
