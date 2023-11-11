@@ -1,7 +1,7 @@
 import { StyleSheet, Pressable, View, Text } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
-import { useTheme } from "../../hooks/useTheme";
+import { useTheme } from "../hooks/useTheme";
 
 export default function Splash() {
   const { theme } = useTheme();

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { useTheme } from "../hooks/useTheme";
 
 export const Button = (props) => {
-  const { theme, mode } = useTheme();
+  const { theme, getInvertedColor } = useTheme();
 
   const { style, icon, ...otherProps } = props;
 
@@ -17,7 +17,7 @@ export const Button = (props) => {
       width: 200,
     },
     text: {
-      color: mode === "light" ? theme.background : theme.text,
+      color: getInvertedColor() === "dark" ? theme.background : theme.text,
       fontSize: 20,
       fontWeight: "bold",
     },

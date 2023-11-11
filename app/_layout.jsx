@@ -2,11 +2,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen, Stack } from "expo-router";
 import { useEffect, useState } from "react";
+import { ThemeProvider } from "../providers/ThemeProvider";
 import { useColorScheme } from "react-native";
-
-//components
-import ThemeContext from "../context/ThemeContext";
-import { Default } from "../constants/Themes";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -28,8 +25,6 @@ export default function RootLayout() {
   });
 
   const colorScheme = useColorScheme();
-  const [selected, setSelected] = useState(Default);
-  const [theme, setTheme] = useState(Default[colorScheme]);
   const [mode, setMode] = useState("system");
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -47,40 +42,46 @@ export default function RootLayout() {
     return <Slot />;
   }
 
-  const onThemeChange = (theme) => {
-    if (mode === "system") {
-      setSelected(theme);
-      setTheme(theme[colorScheme]);
-      return;
+  const getInvertedColor = () => {
+    switch (mode) {
+      case "light":
+        return "dark";
+      case "dark":
+        return "light";
+      case "system":
+        if (colorScheme === "light") return "dark";
+        if (colorScheme === "dark") return "light";
     }
-    setSelected(theme);
-    setTheme(theme[mode]);
-  };
-
-  const onModeChange = (value) => {
-    if (value === "system") {
-      setTheme(selected[colorScheme]);
-      setMode(value);
-      return;
-    }
-    setTheme(selected[value]);
-    setMode(value);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, mode, onThemeChange, onModeChange }}>
-      <Stack
-        screenOptions={{
-          statusBarColor: theme.primary,
-        }}
-      >
+    <ThemeProvider value={{ mode, setMode, colorScheme, getInvertedColor }}>
+      <Stack screenOptions={{ headerShown: false }} initialRouteName="/splash">
+        <Stack.Screen
+          name="splash"
+          options={{
+            headerShown: false,
+            statusBarTranslucent: true,
+            statusBarStyle: "light",
+          }}
+        />
+        <Stack.Screen
+          name="cameraView"
+          options={{
+            headerShown: false,
+            statusBarTranslucent: true,
+            statusBarStyle: "light",
+          }}
+        />
         <Stack.Screen
           name="(tabs)"
           options={{
             headerShown: false,
+            statusBarTranslucent: true,
+            statusBarStyle: getInvertedColor(),
           }}
         />
       </Stack>
-    </ThemeContext.Provider>
+    </ThemeProvider>
   );
 }

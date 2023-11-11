@@ -1,8 +1,9 @@
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "../hooks/useTheme";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const Layout = (props) => {
+  const { top } = useSafeAreaInsets();
   const { theme } = useTheme();
 
   const style = StyleSheet.create({
@@ -13,15 +14,13 @@ export const Layout = (props) => {
       display: "flex",
       alignItems: "center",
       paddingHorizontal: 20,
-      paddingTop: 36,
+      paddingTop: top + 36,
     },
   });
 
   return (
-    <SafeAreaView>
-      <View style={[style.container, props.style]} {...props}>
-        {props.children}
-      </View>
-    </SafeAreaView>
+    <View style={[style.container, props.style]} {...props}>
+      {props.children}
+    </View>
   );
 };

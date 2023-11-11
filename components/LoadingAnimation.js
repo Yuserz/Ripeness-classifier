@@ -5,7 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 
 const LoadingAnimation = ({ isPlaying, onFinish }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { theme, mode } = useTheme();
+  const { theme, getInvertedColor } = useTheme();
 
   const styles = StyleSheet.create({
     loadingContainer: {
@@ -17,7 +17,7 @@ const LoadingAnimation = ({ isPlaying, onFinish }) => {
     text: {
       position: "absolute",
       bottom: 250,
-      color: mode === "light" ? theme.background : theme.text,
+      color: getInvertedColor() === "dark" ? theme.background : theme.text,
       fontSize: 24,
     },
   });
@@ -45,7 +45,13 @@ const LoadingAnimation = ({ isPlaying, onFinish }) => {
             onFinish();
             setIsLoading(false);
           }}
-          colorFilters={[{ keypath: "Balls", color: mode === "light" ? theme.background : theme.text }]}
+          colorFilters={[
+            {
+              keypath: "Balls",
+              color:
+                getInvertedColor() === "dark" ? theme.background : theme.text,
+            },
+          ]}
         />
         <Text style={styles.text}>PROCESSING IMAGE</Text>
       </View>

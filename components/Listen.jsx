@@ -5,9 +5,9 @@ import * as Speech from "expo-speech";
 import { useState, useEffect } from "react";
 
 export const Listen = ({ context }) => {
-  const { theme, mode } = useTheme();
+  const { theme, getInvertedColor } = useTheme();
   const [isPlaying, setIsPlaying] = useState(false);
-  const color = mode === "light" ? theme.primary : theme.text;
+  const color = getInvertedColor() === "dark" ? theme.primary : theme.text;
 
   const style = StyleSheet.create({
     container: {

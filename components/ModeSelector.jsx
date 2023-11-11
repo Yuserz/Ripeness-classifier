@@ -3,7 +3,7 @@ import { useTheme } from "../hooks/useTheme";
 import { Entypo } from "@expo/vector-icons";
 
 export const ModeSelector = () => {
-  const { theme, mode, onModeChange } = useTheme();
+  const { theme, mode, onModeChange, getInvertedColor } = useTheme();
 
   const options = [
     { id: "Light", background: "white", text: "black" },
@@ -11,14 +11,16 @@ export const ModeSelector = () => {
     {
       id: "System",
       background: theme.primary,
-      text: mode === "light" ? theme.background : theme.text,
+      text: getInvertedColor() === "light" ? theme.text : theme.background,
     },
   ];
 
   const themeStyle = StyleSheet.create({
     border: {
       borderColor:
-        mode === "light" ? "rgba(0, 0, 0, .2)" : "rgba(255, 255, 255, .2)",
+        getInvertedColor() === "dark"
+          ? "rgba(0, 0, 0, .2)"
+          : "rgba(255, 255, 255, .2)",
     },
   });
 

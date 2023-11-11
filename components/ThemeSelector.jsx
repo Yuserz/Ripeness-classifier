@@ -2,10 +2,9 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useTheme } from "../hooks/useTheme";
 import { themes } from "../constants/Themes";
 import { Entypo } from "@expo/vector-icons";
-import { useColorScheme } from "react-native";
+
 export const ThemeSelector = () => {
-  const colorScheme = useColorScheme();
-  const { theme, mode, onThemeChange } = useTheme();
+  const { theme, onThemeChange, getInvertedColor } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -16,7 +15,7 @@ export const ThemeSelector = () => {
           background: {
             backgroundColor: temp.primary,
             borderColor:
-              mode === "light"
+              getInvertedColor() === "dark"
                 ? "rgba(0, 0, 0, .2)"
                 : "rgba(255, 255, 255, .3)",
           },
@@ -28,7 +27,7 @@ export const ThemeSelector = () => {
             style={[styles.preview, themeStyle.background]}
             onPress={() => onThemeChange(t)}
           >
-            {theme === t[mode === "system" ? colorScheme : mode] && (
+            {theme === t[getInvertedColor() === "light" ? "dark" : "light"] && (
               <Entypo name="check" size={30} color={temp.background} />
             )}
           </Pressable>

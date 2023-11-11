@@ -42,22 +42,22 @@ export default () => {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="splash"
         options={{
           href: null,
           headerShown: false,
           tabBarStyle: { display: "none" },
         }}
-      />
-      <Tabs.Screen
+      /> */}
+      {/* <Tabs.Screen
         name="cameraView"
         options={{
           href: null,
           headerShown: false,
           tabBarStyle: { display: "none" },
         }}
-      />
+      /> */}
     </Tabs>
   );
 };

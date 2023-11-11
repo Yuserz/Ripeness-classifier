@@ -1,8 +1,9 @@
-import { Modal, View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { View, StyleSheet, Pressable, Dimensions } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { useRef, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CameraView() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -10,6 +11,13 @@ export default function CameraView() {
   const ref = useRef(null);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const { top } = useSafeAreaInsets();
+
+  const padding = StyleSheet.create({
+    container: {
+      paddingTop: top,
+    },
+  });
 
   const takePicture = async () => {
     if (!ready) return;
@@ -25,7 +33,7 @@ export default function CameraView() {
   if (!permission.granted) requestPermission();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, padding.container]}>
       {isFocused && (
         <Camera
           style={styles.camera}

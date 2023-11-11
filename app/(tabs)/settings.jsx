@@ -13,12 +13,15 @@ export default function Settings() {
       <Header>SETTINGS</Header>
       <View style={styles.container}>
         <View>
-          <Text style={styles.header}>Theme</Text>
+          <Text style={styles.header}>Theme Style</Text>
           <ThemeSelector />
         </View>
         <View>
-          <Text style={styles.header}>Preference</Text>
+          <Text style={styles.header}>Theme Preference</Text>
           <ModeSelector />
+        </View>
+        <View>
+          <Text style={styles.header}>Text to Speech</Text>
         </View>
       </View>
     </Layout>
