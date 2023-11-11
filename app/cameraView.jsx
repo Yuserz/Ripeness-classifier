@@ -21,7 +21,9 @@ export default function CameraView() {
 
   const takePicture = async () => {
     if (!ready) return;
-    const snap = await ref.current.takePictureAsync();
+    const snap = await ref.current.takePictureAsync({
+      quality: 0.5,
+    });
     navigation.navigate("camera", { image: snap.uri });
   };
 
