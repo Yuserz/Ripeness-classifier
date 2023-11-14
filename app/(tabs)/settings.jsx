@@ -7,8 +7,14 @@ import {
   CheckBox,
 } from "../../components";
 import { View, StyleSheet } from "react-native";
+import { useSettings } from "../../hooks/useSettings";
 
 export default function Settings() {
+  const controller = useSettings();
+
+  const handleEvent = (name, value) => {
+    controller.onApplySettings({ [name]: value });
+  };
 
   return (
     <Layout>
@@ -24,12 +30,27 @@ export default function Settings() {
         </View>
         <View>
           <Text style={styles.header}>Text to Speech</Text>
-          <CheckBox>Auto play result on finish</CheckBox>
+          <CheckBox
+            onChange={(value) => handleEvent("autoPlaySpeech", value)}
+            value={controller.autoPlaySpeech}
+          >
+            Auto play result on finish
+          </CheckBox>
         </View>
         <View>
           <Text style={styles.header}>Camera</Text>
-          <CheckBox>Play camera shutter sound</CheckBox>
-          <CheckBox>Save captured image on device</CheckBox>
+          <CheckBox
+            onChange={(value) => handleEvent("cameraShutter", value)}
+            value={controller.cameraShutter}
+          >
+            Play camera shutter sound
+          </CheckBox>
+          <CheckBox
+            onChange={(value) => handleEvent("saveCaptured", value)}
+            value={controller.saveCaptured}
+          >
+            Save captured image on device
+          </CheckBox>
         </View>
       </View>
     </Layout>

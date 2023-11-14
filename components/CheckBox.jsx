@@ -4,14 +4,18 @@ import { Pressable, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useTheme } from "../hooks/useTheme";
 
-export const CheckBox = ({ children }) => {
-  const [checked, setChecked] = useState(false);
+export const CheckBox = ({ children, onChange, value }) => {
+  const [checked, setChecked] = useState(value);
   const { theme } = useTheme();
+
   return (
     <Pressable
       style={styles.container}
       onPress={() => {
-        setChecked((prev) => !prev);
+        setChecked((prev) => {
+          onChange(!prev);
+          return !prev;
+        });
       }}
     >
       <Text style={styles.text}>{children}</Text>
@@ -20,7 +24,6 @@ export const CheckBox = ({ children }) => {
         value={checked}
         onValueChange={setChecked}
         color={checked && theme.primary}
-        
       />
     </Pressable>
   );

@@ -1,10 +1,11 @@
 import { StyleSheet, Pressable, View, Text } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import { useTheme } from "../hooks/useTheme";
 
 export default function Splash() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
 
   const themeStyle = StyleSheet.create({
     container: { backgroundColor: theme.primary },
@@ -28,12 +29,14 @@ export default function Splash() {
         </Text>
       </View>
       <View style={styles.btnContainer}>
-        <Link href={"/camera"} asChild>
-          {/* <Link href={"/scan-tab"} asChild> */}
-          <Pressable style={themeStyle.button}>
-            <Text style={[styles.btnText, themeStyle.buttonText]}>START</Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          style={themeStyle.button}
+          onPress={() => {
+            navigation.navigate("camera");
+          }}
+        >
+          <Text style={[styles.btnText, themeStyle.buttonText]}>START</Text>
+        </Pressable>
       </View>
     </View>
   );

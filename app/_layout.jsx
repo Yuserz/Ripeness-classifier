@@ -4,6 +4,7 @@ import { Slot, SplashScreen, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "../providers/ThemeProvider";
 import { useColorScheme } from "react-native";
+import { SettingsProvider } from "../providers/SettingsProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,33 +56,38 @@ export default function RootLayout() {
   };
 
   return (
-    <ThemeProvider value={{ mode, setMode, colorScheme, getInvertedColor }}>
-      <Stack screenOptions={{ headerShown: false }} initialRouteName="/splash">
-        <Stack.Screen
-          name="splash"
-          options={{
-            headerShown: false,
-            statusBarTranslucent: true,
-            statusBarStyle: "light",
-          }}
-        />
-        <Stack.Screen
-          name="cameraView"
-          options={{
-            headerShown: false,
-            statusBarTranslucent: true,
-            statusBarStyle: "light",
-          }}
-        />
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            statusBarTranslucent: true,
-            statusBarStyle: getInvertedColor(),
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+    <SettingsProvider>
+      <ThemeProvider value={{ mode, setMode, colorScheme, getInvertedColor }}>
+        <Stack
+          screenOptions={{ headerShown: false, animation: "none" }}
+          initialRouteName="/splash"
+        >
+          <Stack.Screen
+            name="splash"
+            options={{
+              headerShown: false,
+              statusBarTranslucent: true,
+              statusBarStyle: "light",
+            }}
+          />
+          <Stack.Screen
+            name="cameraView"
+            options={{
+              headerShown: false,
+              statusBarTranslucent: true,
+              statusBarStyle: "light",
+            }}
+          />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              statusBarTranslucent: true,
+              statusBarStyle: getInvertedColor(),
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </SettingsProvider>
   );
 }
