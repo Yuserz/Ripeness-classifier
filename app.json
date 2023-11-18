@@ -1,10 +1,5 @@
 {
   "expo": {
-    "assets": [
-      "./assets/model/model.json",
-      "./assets/model/weights.bin",
-      "./assets/animations/loading.json"
-    ],
     "name": "banana-ripeness",
     "slug": "banana-ripeness",
     "version": "1.0.0",

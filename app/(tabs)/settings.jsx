@@ -10,10 +10,10 @@ import { View, StyleSheet } from "react-native";
 import { useSettings } from "../../hooks/useSettings";
 
 export default function Settings() {
-  const controller = useSettings();
+  const { settings, onApplySettings } = useSettings();
 
   const handleEvent = (name, value) => {
-    controller.onApplySettings({ [name]: value });
+    onApplySettings({ [name]: value });
   };
 
   return (
@@ -32,7 +32,7 @@ export default function Settings() {
           <Text style={styles.header}>Text to Speech</Text>
           <CheckBox
             onChange={(value) => handleEvent("autoPlaySpeech", value)}
-            value={controller.autoPlaySpeech}
+            value={settings.autoPlaySpeech}
           >
             Auto play result on finish
           </CheckBox>
@@ -47,7 +47,7 @@ export default function Settings() {
           </CheckBox> */}
           <CheckBox
             onChange={(value) => handleEvent("saveCaptured", value)}
-            value={controller.saveCaptured}
+            value={settings.saveCaptured}
           >
             Save captured image on device
           </CheckBox>

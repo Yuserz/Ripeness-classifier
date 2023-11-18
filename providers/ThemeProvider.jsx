@@ -15,6 +15,7 @@ export const ThemeProvider = ({ children, value }) => {
       const res = await getItem(KEY);
       if (!res) {
         await setItem(KEY, { theme: "default", mode });
+        onThemeLoad();
       } else {
         const t = themes.find((t) => t.id === res.theme).theme;
         setMode(res.mode);
