@@ -1,11 +1,12 @@
 import ThemeContext from "../context/ThemeContext";
 import { useState, useLayoutEffect } from "react";
 import { Default } from "../constants/Themes";
-import { getItem, setItem, removeItem } from "../utils/asyncStorage";
+import { getItem, removeItem, setItem } from "../utils/asyncStorage";
+import { themes } from "../constants/Themes";
 
 const KEY = "theme";
 export const ThemeProvider = ({ children, value }) => {
-  const { mode, setMode, colorScheme, getInvertedColor } = value;
+  const { mode, setMode, colorScheme, getInvertedColor, onThemeLoad } = value;
   const [selected, setSelected] = useState(Default);
   const [theme, setTheme] = useState(Default[colorScheme]);
 
@@ -13,10 +14,18 @@ export const ThemeProvider = ({ children, value }) => {
     const load = async () => {
       const res = await getItem(KEY);
       if (!res) {
-        await setItem(KEY, { theme, mode });
+        await setItem(KEY, { theme: "default", mode });
       } else {
-        setTheme(res.theme);
+        const t = themes.find((t) => t.id === res.theme).theme;
         setMode(res.mode);
+
+        if (res.mode === "system")
+          setTheme(t[getInvertedColor() === "light" ? "dark" : "light"]);
+        else setTheme(t[res.mode]);
+
+        setSelected(t);
+
+        onThemeLoad();
       }
     };
     load();
@@ -24,26 +33,27 @@ export const ThemeProvider = ({ children, value }) => {
 
   const onThemeChange = async (theme) => {
     if (mode === "system") {
-      setSelected(theme);
-      setTheme(theme[colorScheme]);
-      await setItem(KEY, { theme: theme[colorScheme], mode });
+      setSelected(theme.theme);
+      setTheme(theme.theme[colorScheme]);
+      await setItem(KEY, { theme: theme.id, mode });
       return;
     }
-    setSelected(theme);
-    setTheme(theme[mode]);
-    await setItem(KEY, { theme: theme[mode], mode });
+    setSelected(theme.theme);
+    setTheme(theme.theme[mode]);
+    await setItem(KEY, { theme: theme.id, mode });
   };
 
   const onModeChange = async (value) => {
+    const res = await getItem(KEY);
     if (value === "system") {
       setTheme(selected[colorScheme]);
       setMode(value);
-      await setItem(KEY, { theme: selected[colorScheme], mode: value });
+      await setItem(KEY, { ...res, mode: value });
       return;
     }
     setTheme(selected[value]);
     setMode(value);
-    await setItem(KEY, { theme: selected[value], mode: value });
+    await setItem(KEY, { ...res, mode: value });
   };
 
   return (

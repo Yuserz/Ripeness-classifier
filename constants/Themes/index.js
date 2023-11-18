@@ -8,14 +8,14 @@ import { Purple } from "./Purple";
 import { Shade } from "./Shade";
 
 const themes = [
-  Default,
-  Bento,
-  Brownish,
-  MarineBlue,
-  Minimal,
-  OliveGreen,
-  Purple,
-  Shade,
+  { id: "default", theme: Default },
+  { id: "bento", theme: Bento },
+  { id: "brownish", theme: Brownish },
+  { id: "marine", theme: MarineBlue },
+  { id: "minimal", theme: Minimal },
+  { id: "olivegreen", theme: OliveGreen },
+  { id: "purple", theme: Purple },
+  { id: "shade", theme: Shade },
 ];
 
 export { Default, themes };

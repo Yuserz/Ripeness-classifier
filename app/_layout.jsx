@@ -27,6 +27,7 @@ export default function RootLayout() {
 
   const colorScheme = useColorScheme();
   const [mode, setMode] = useState("system");
+  const [themeLoaded, setThemeLoaded] = useState(false);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -34,10 +35,10 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && themeLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, themeLoaded]);
 
   if (!loaded) {
     return <Slot />;
@@ -55,9 +56,13 @@ export default function RootLayout() {
     }
   };
 
+  const onThemeLoad = () => {
+    setThemeLoaded(true);
+  }
+
   return (
     <SettingsProvider>
-      <ThemeProvider value={{ mode, setMode, colorScheme, getInvertedColor }}>
+      <ThemeProvider value={{ mode, setMode, colorScheme, getInvertedColor, onThemeLoad }}>
         <Stack
           screenOptions={{ headerShown: false, animation: "none" }}
           initialRouteName="/splash"

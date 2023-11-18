@@ -9,7 +9,7 @@ export const ThemeSelector = () => {
   return (
     <View style={styles.container}>
       {themes.map((t, index) => {
-        const temp = t.light;
+        const temp = t.theme.light;
 
         const themeStyle = StyleSheet.create({
           background: {
@@ -27,7 +27,7 @@ export const ThemeSelector = () => {
             style={[styles.preview, themeStyle.background]}
             onPress={() => onThemeChange(t)}
           >
-            {theme === t[getInvertedColor() === "light" ? "dark" : "light"] && (
+            {theme === t.theme[getInvertedColor() === "light" ? "dark" : "light"] && (
               <Entypo name="check" size={30} color={temp.background} />
             )}
           </Pressable>
