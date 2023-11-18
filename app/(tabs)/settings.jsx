@@ -39,12 +39,12 @@ export default function Settings() {
         </View>
         <View>
           <Text style={styles.header}>Camera</Text>
-          <CheckBox
+          {/* <CheckBox
             onChange={(value) => handleEvent("cameraShutter", value)}
             value={controller.cameraShutter}
           >
             Play camera shutter sound
-          </CheckBox>
+          </CheckBox> */}
           <CheckBox
             onChange={(value) => handleEvent("saveCaptured", value)}
             value={controller.saveCaptured}

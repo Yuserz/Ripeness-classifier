@@ -4,7 +4,8 @@ import { useRef, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { saveToLibraryAsync } from "expo-media-library";
+import { useSettings } from "../hooks/useSettings";
 export default function CameraView() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [ready, setIsReady] = useState(false);
@@ -12,6 +13,7 @@ export default function CameraView() {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const { top } = useSafeAreaInsets();
+  const { settings } = useSettings();
 
   const padding = StyleSheet.create({
     container: {
@@ -20,11 +22,20 @@ export default function CameraView() {
   });
 
   const takePicture = async () => {
-    if (!ready) return;
-    const snap = await ref.current.takePictureAsync({
-      quality: 0.5,
-    });
-    navigation.navigate("camera", { image: snap.uri });
+    try {
+      if (!ready) return;
+      const snap = await ref.current.takePictureAsync({
+        quality: 0.5,
+      });
+
+      if (settings.saveCaptured) {
+        await saveToLibraryAsync(snap.uri);
+      }
+
+      navigation.navigate("camera", { image: snap.uri });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   if (!permission) {

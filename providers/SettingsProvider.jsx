@@ -22,18 +22,13 @@ export const SettingsProvider = ({ children }) => {
   }, []);
 
   const onApplySettings = async (value) => {
-    setSettings((prev) => ({ ...prev, value }));
+    setSettings((prev) => ({ ...prev, ...value }));
     await setItem(KEY, { ...settings, ...value });
   };
 
   return (
     <SettingsContext.Provider
-      value={{
-        autoPlaySpeech: settings.autoPlaySpeech,
-        cameraShutter: settings.cameraShutter,
-        saveCaptured: settings.saveCaptured,
-        onApplySettings,
-      }}
+      value={{settings, onApplySettings}}
     >
       {children}
     </SettingsContext.Provider>
