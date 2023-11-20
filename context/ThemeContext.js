@@ -1,8 +1,11 @@
-import React, { createContext, useContext } from "react";
-import DefaultTheme from "../constants/Theme"; // Import the default theme
+import { createContext } from "react";
+import { Default } from "../constants/Themes";
 
-const ThemeContext = createContext(DefaultTheme);
-
-export const useTheme = () => useContext(ThemeContext);
+const ThemeContext = createContext({
+  theme: Default.light,
+  mode: "system",
+  onThemeChange: () => {},
+  onModeChange: () => {},
+});
 
 export default ThemeContext;
