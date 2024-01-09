@@ -1,6 +1,6 @@
 import { StyleSheet, Pressable, View, Text } from "react-native";
 import React from "react";
-import { Link, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useTheme } from "../hooks/useTheme";
 
 export default function Splash() {

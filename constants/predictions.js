@@ -2,7 +2,7 @@ export const predictionList = [
   {
     id: "unripe",
     description:
-      "This Banana looks green. Please wait atleast 4 to 5 days before it ripes.",
+      "This Banana looks green. Please wait a couple of days before it ripes.",
   },
   {
     id: "ripe",

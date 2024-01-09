@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { useModel } from "../../hooks/useModel";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -87,12 +87,14 @@ const BananaDetector = () => {
         onFinish={onLoadingFinish}
       />
       <Header>UPLOAD SCREEN</Header>
-      <ImageView image={selectedImage} />
-      <Text style={style.text}>
-        Capture or upload an image of banana to start.
-      </Text>
-      <View style={style.bottonContainer}>
+      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+        <ImageView image={selectedImage} />
+        <Text style={styles.text}>
+          Capture or upload an image of banana to start.
+        </Text>
+
         <Button
+          style={styles.captureBtn}
           onPress={() => {
             navigation.navigate("cameraView");
           }}
@@ -100,28 +102,30 @@ const BananaDetector = () => {
         >
           Capture
         </Button>
-        <SubButton onPress={handleImageSelection}>Upload Image</SubButton>
-      </View>
+        <SubButton style={styles.subBtn} onPress={handleImageSelection}>
+          Upload Image
+        </SubButton>
+      </ScrollView>
     </Layout>
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+    width: "100%",
+  },
   text: {
     fontSize: 16,
     textAlign: "center",
+    marginBottom: 10,
   },
-  bottonContainer: {
-    display: "flex",
-    alignItems: "center",
-    rowGap: 5,
-    position: "absolute",
-    height: 200,
-    bottom: 0,
+  captureBtn: {
+    marginTop: 10,
+    alignSelf: "center",
   },
-  button: {
-    width: 175,
-    opacity: 0.9,
+  subBtn: {
+    alignSelf: "center",
   },
 });
 
