@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { TouchableOpacity, StyleSheet, Text } from "react-native";
 import { useTheme } from "../hooks/useTheme";
 
 export const Button = (props) => {
@@ -24,8 +24,8 @@ export const Button = (props) => {
   });
 
   return (
-    <Pressable style={[themeStyle.button, style]} {...otherProps}>
+    <TouchableOpacity style={[themeStyle.button, style]} {...otherProps}>
       <Text style={themeStyle.text}>{props.children}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

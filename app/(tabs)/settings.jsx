@@ -38,16 +38,9 @@ export default function Settings() {
               Auto play result on finish
             </CheckBox>
           </View>
-          <View>
+          <View style={styles.checkBox2Cont}>
             <Text style={styles.header}>Camera</Text>
-            {/* <CheckBox
-            onChange={(value) => handleEvent("cameraShutter", value)}
-            value={controller.cameraShutter}
-          >
-            Play camera shutter sound
-          </CheckBox> */}
             <CheckBox
-              style={styles.checkBox2}
               onChange={(value) => handleEvent("saveCaptured", value)}
               value={settings.saveCaptured}
             >
@@ -82,7 +75,7 @@ const styles = StyleSheet.create({
   optionText: {
     fontWeight: "normal",
   },
-  checkBox2: {
-    marginBottom: 10,
+  checkBox2Cont: {
+    marginBottom: 20,
   },
 });

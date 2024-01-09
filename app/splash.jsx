@@ -2,6 +2,7 @@ import { StyleSheet, Pressable, View, Text } from "react-native";
 import React from "react";
 import { useNavigation } from "expo-router";
 import { useTheme } from "../hooks/useTheme";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Splash() {
   const { theme } = useTheme();
@@ -29,14 +30,14 @@ export default function Splash() {
         </Text>
       </View>
       <View style={styles.btnContainer}>
-        <Pressable
+        <TouchableOpacity
           style={themeStyle.button}
           onPress={() => {
             navigation.navigate("camera");
           }}
         >
           <Text style={[styles.btnText, themeStyle.buttonText]}>START</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

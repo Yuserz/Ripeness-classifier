@@ -1,13 +1,13 @@
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "./Text";
 
 export const SubButton = (props) => {
   const { style, children, ...o } = props;
 
   return (
-    <Pressable style={[currStyle.subButton, style]} {...o}>
+    <TouchableOpacity style={[currStyle.subButton, style]} {...o}>
       <Text style={currStyle.subButtonText}>{children}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
