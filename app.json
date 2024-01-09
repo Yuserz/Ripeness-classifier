@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "banana-ripeness",
+    "name": "Banana Ripeness Classifier",
     "slug": "banana-ripeness",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
