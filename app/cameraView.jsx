@@ -11,11 +11,12 @@ import { useRef, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { saveToLibraryAsync } from "expo-media-library";
+import { saveToLibraryAsync, usePermissions } from "expo-media-library";
 import { useSettings } from "../hooks/useSettings";
 
 export default function CameraView() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permissionMedia, requestPermissionMedia] = usePermissions();
   const [ready, setIsReady] = useState(false);
   const [isCapture, setIsCapture] = useState(false);
   const ref = useRef(null);
@@ -52,12 +53,13 @@ export default function CameraView() {
     }
   };
 
-  if (!permission) {
+  if (!permission || !permissionMedia) {
     // Camera permissions are still loading
     return <View />;
   }
 
   if (!permission.granted) requestPermission();
+  if (!permissionMedia.granted) requestPermissionMedia();
 
   return (
     <View style={[styles.container, padding.container]}>

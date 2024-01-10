@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Banana Ripeness Classifier",
-    "slug": "banana-ripeness-classifier",
+    "slug": "banana-ripeness",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
