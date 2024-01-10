@@ -12,7 +12,7 @@ import {
   LoadingAnimation,
 } from "../../components";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useNavigation, router } from "expo-router";
 import { useRoute } from "@react-navigation/native";
 
 const model = require("../../assets/model/model.json");
@@ -96,7 +96,7 @@ const BananaDetector = () => {
         <Button
           style={styles.captureBtn}
           onPress={() => {
-            navigation.navigate("cameraView");
+            router.push("cameraView");
           }}
           icon={<Entypo name="camera" />}
         >
