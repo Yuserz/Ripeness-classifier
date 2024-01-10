@@ -1,4 +1,11 @@
-import { View, StyleSheet, Pressable, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Dimensions,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import { useRef, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
@@ -6,9 +13,11 @@ import { useNavigation } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { saveToLibraryAsync } from "expo-media-library";
 import { useSettings } from "../hooks/useSettings";
+
 export default function CameraView() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [ready, setIsReady] = useState(false);
+  const [isCapture, setIsCapture] = useState(false);
   const ref = useRef(null);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
@@ -24,8 +33,11 @@ export default function CameraView() {
   const takePicture = async () => {
     try {
       if (!ready) return;
+      setIsCapture(true);
       const snap = await ref.current.takePictureAsync({
-        quality: 0.5,
+        quality: 0.2,
+        skipProcessing: true,
+        base64: false,
       });
 
       if (settings.saveCaptured) {
@@ -35,6 +47,8 @@ export default function CameraView() {
       navigation.navigate("camera", { image: snap.uri });
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsCapture(false);
     }
   };
 
@@ -47,6 +61,13 @@ export default function CameraView() {
 
   return (
     <View style={[styles.container, padding.container]}>
+      {isCapture && (
+        <View style={styles.indicator}>
+          <ActivityIndicator size={"small"} color={"white"} />
+          <Text style={styles.text}>Capturing... Please hold still!</Text>
+        </View>
+      )}
+
       {isFocused && (
         <Camera
           style={styles.camera}
@@ -72,6 +93,17 @@ const { width, height } = Dimensions.get("window");
 const freeHeight = height - (width * 4) / 3;
 
 const styles = StyleSheet.create({
+  indicator: {
+    display: "flex",
+    flexDirection: "row",
+    position: "absolute",
+    top: "10%",
+    zIndex: 10,
+    columnGap: 10,
+  },
+  text: {
+    color: "white",
+  },
   container: {
     flex: 1,
     alignItems: "center",
